@@ -4,6 +4,7 @@ class CUserData
 	friend class CMyList;
 public:
 	CUserData();
+	CUserData(const char* pszName, const char* pszPhone);
 	~CUserData();
 	
 	void SetName(const char *pszName);

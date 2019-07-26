@@ -2,6 +2,8 @@
 #include "pch.h"
 #include "CUserInterface.h"
 #include <iostream>
+#include "CMyList.h"
+#include "CUserData.h"
 using namespace std;
 
 CUserInterface::CUserInterface(CMyList &rList)
@@ -16,16 +18,45 @@ CUserInterface::~CUserInterface()
 
 void CUserInterface::Add(void)
 {
-
+	char szName[32];
+	char szPhone[32];
+	cout << "Enter Name to add: ";
+	cout << endl;
+	cin >> szName;
+	cout << "Enter Phone Nuber: ";
+	cin >> szPhone;
+	cout << endl;
+	m_List.AddNewNode(szName, szPhone);
+	PrintAll();
 }
 
 void CUserInterface::Search(void)
 {
-
+	char szName[32];
+	CUserData *nodeFound;
+	cout << "Enter Name to find: ";
+	cin >> szName;
+	cout << endl;
+	if ((nodeFound = m_List.FindNode(szName)))
+	{
+		cout << nodeFound->GetName() << " : " << nodeFound->GetPhone() << endl;
+	}
+	else cout << "No item found" << endl;
 }
 void CUserInterface::Remove(void)
 {
-
+	char szName[32];
+	cout << "Enter Name to delete from phone book: ";
+	cin >> szName;
+	cout << endl;
+	if (m_List.RemoveNode(szName) == 1)
+	{
+		cout << "Deleted: " << szName << endl;
+	}
+	else
+	{
+		cout << "No item with name in the phonebook" << szName << endl;
+	}
 }
 
 int CUserInterface::PrintUI(void)
@@ -42,7 +73,11 @@ int CUserInterface::PrintUI(void)
 
 void CUserInterface::PrintAll(void)
 {
-
+	std::cout << "------------------Phone Book------------------" << std::endl;
+	std::cout << "Total number of items = " << m_List.GetCount() << std::endl;
+	std::cout << "----------------------------------------------" << std::endl;
+	m_List.PrintAll();
+	std::cout << "----------------------------------------------" << std::endl;
 }
 
 int CUserInterface::Run(void)

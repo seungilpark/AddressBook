@@ -1,0 +1,6 @@
+1. Follow tutorials based on the chapter 11 of the book "이것이 CPP이다."
+2. Make an REST API using node.js with express.js to serve the functionality
+3. Make an REST API using python with flask to serve the functionality
+4. Make an REST API using dotnet core 2.2
+5. Make a GUI app with dotnet core /Razor Page to serve the functionality
+ 

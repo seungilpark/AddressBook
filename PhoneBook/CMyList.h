@@ -10,6 +10,7 @@ public:
 protected:
 	void ReleaseList(void);
 	CUserData m_Head;
+	int ItemCount;
 
 public:
 	void LoadList(const char* pszFileName);
@@ -24,7 +25,7 @@ public:
 
 	int RemoveNode(const char* pszName);
 
-
+	int GetCount(void) { return ItemCount; }
 
 };
 

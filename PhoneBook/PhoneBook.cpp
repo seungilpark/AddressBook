@@ -8,9 +8,10 @@
 
 int main()
 {
-	CMyList DB;
+	CMyList DB("phonebook.dat");
 	CUserInterface UI(DB);
 	UI.Run();
+	DB.SaveList("phonebook.dat");
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

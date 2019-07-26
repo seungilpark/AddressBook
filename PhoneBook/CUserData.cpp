@@ -7,6 +7,13 @@ CUserData::CUserData()
 {
 }
 
+CUserData::CUserData(const char* pszName, const char* pszPhone)
+	:pNext(nullptr)
+{
+	this->SetName(pszName);
+	this->SetPhone(pszPhone);
+}
+
 
 CUserData::~CUserData()
 {

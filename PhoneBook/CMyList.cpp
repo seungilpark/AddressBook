@@ -2,11 +2,15 @@
 #include "CMyList.h"
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <iostream>
 
 
 CMyList::CMyList(const char* pszFileName)
+	: ItemCount(0)
 {
-	// call lostList()
+	// call loadList()
+	LoadList(pszFileName);
 }
 
 
@@ -17,17 +21,37 @@ CMyList::~CMyList()
 
 void CMyList::LoadList(const char* pszFileName)
 {
-	// check if file exists
-	// if yes
-	// load a list from file
-	// else
-	// create a file 
-
+	CUserData UDBuffer;
+	std::ifstream fptr;
+	
+	fptr.open(pszFileName, std::ios::in | std::ios::binary);
+	if (!fptr.fail())
+	while(fptr.read((char*) &UDBuffer, sizeof(CUserData)), !fptr.eof())
+	{
+		AddNewNode(UDBuffer.GetName(), UDBuffer.GetPhone());
+	}
+	else fptr.open(pszFileName, std::ios::out | std::ios::binary);
+	
+	fptr.close();
+	//problem would be the order of the objects saved because it always saved to the head
 }
 
 void CMyList::SaveList(const char* pszFileName)
 {
+	CUserData UDBuffer;
+	CUserData* cur = m_Head.GetNext();
+	std::ofstream fptr;
+	fptr.open(pszFileName);
 
+	while (cur) 
+	{
+		UDBuffer.SetName(cur->GetName());
+		UDBuffer.SetPhone(cur->GetPhone());
+		fptr.write((char*)&UDBuffer, sizeof(UDBuffer));
+		cur = cur->GetNext();
+	}
+
+	fptr.close();
 }
 
 void CMyList::ReleaseList(void)
@@ -54,33 +78,46 @@ void CMyList::ReleaseList(void)
 */
 CUserData* CMyList::FindNode(const char* pszName)
 {
+	CUserData* cur = &m_Head;
+	while (cur->GetNext())
+	{
+		if (strncmp(cur->GetNext()->GetName(), pszName, 32) == 0)
+		{
+			return cur->GetNext();
+		}
+		cur = cur->GetNext();
+	}
+
+	return nullptr;
 }
 
 int CMyList::AddNewNode(const char* pszName, const char* pszPhone)
 {
+/*
 	CUserData *newNode = new CUserData;
-	if (!newNode) return 0;//also throw an allocation error
-
+	if (!newNode) return 0;//maybe throw an allocation error
 	newNode->SetName(pszName);
 	newNode->SetPhone(pszPhone);
 	newNode->SetNext(nullptr);
-
+*/
+	CUserData *newNode = new CUserData(pszName, pszPhone);
+	if (!newNode) return 0;
 	if (m_Head.GetNext()) newNode->SetNext(m_Head.GetNext());
 	m_Head.SetNext(newNode);
+	ItemCount++;
+	return 1;
 }
 
 void CMyList::PrintAll(void)
 {
-	const CUserData *cur = m_Head.GetNext();
-	std::cout << "------------------Phone Book------------------" << std::endl;
-	while (cur)
+	const CUserData *cur = &m_Head;
+	while (cur->GetNext())
 	{
-		std::cout << "Name: " << cur->GetName() << std::endl;
-		std::cout << "Phone: " << cur->GetPhone() << std::endl;
+		std::cout << "Name: " << cur->GetNext()->GetName() << std::endl;
+		std::cout << "Phone: " << cur->GetNext()->GetPhone() << std::endl;
 		std::cout << "----------------------------------------------" << std::endl;
 		cur = cur->GetNext();
 	}
-	std::cout << "----------------------------------------------" << std::endl;
 }
 
 
@@ -96,12 +133,11 @@ int CMyList::RemoveNode(const char* pszName)
 			cur->SetNext(cur->GetNext()->GetNext()); // detaching the node to delete
 			
 			delete nodeToDelete; // deallocating the node to delete
+			ItemCount--;
 
-			std::cout << "Removed Item with name: { " << pszName << " }." << std::endl; //maybe move it to UI
 
 			return 1;
 		}
 	}
-	std::cout << "No Item found with name: { " << pszName << " }." << std::endl; //UI function maybe move it to UI
 	return -1;
 }
